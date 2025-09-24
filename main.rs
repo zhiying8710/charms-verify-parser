@@ -5,12 +5,25 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use charms_client::tx::EnchantedTx;
 
+/// Charms verification parser server
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Port to bind the server to
+    #[arg(short, long, default_value_t = 3000)]
+    port: u16,
+}
+
 #[tokio::main]
 async fn main() {
+    // Parse command line arguments
+    let args = Args::parse();
+
     // Initialize tracing
     tracing_subscriber::fmt::init();
 
@@ -21,7 +34,7 @@ async fn main() {
         .route("/health", get(health_check));
 
     // Start server
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], args.port));
     println!("Server starting on http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
