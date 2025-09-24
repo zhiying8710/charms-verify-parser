@@ -1,0 +1,7 @@
+.DS_Store
+/.idea
+/.run
+/elf
+/target
+/tmp
+/charms-lib/target/
